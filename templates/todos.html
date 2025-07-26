@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Filtered Todos</title>
+    <!-- <link rel="stylesheet" href="/styles.css"> -->
+</head>
+<body>
+    <div>
+        <a href="/">Back to All Todos</a>
+        {% if owner %}
+        <p>Showing todos for owner: {{ owner }}</p>
+        {% else %}
+        <p>Showing all todos</p>
+        {% endif %}
+    </div>
+    <h1>Filtered Todos</h1>
+    <ul>
+        {% for todo in todos %}<!DOCTYPE html>
+        <html>
+        <head>
+            <title>Filtered Todos</title>
+            <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+            <style>
+                * {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
+                }
+                
+                body {
+                    font-family: 'Arial', sans-serif;
+                    background: #f0f2f5;
+                    color: #1a1a1a;
+                    line-height: 1.6;
+                }
+        
+                .container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+        
+                .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 30px;
+                }
+        
+                .back-button {
+                    text-decoration: none;
+                    color: #666;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                }
+        
+                .todo-card {
+                    background: white;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin-bottom: 15px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                }
+        
+                .todo-content {
+                    flex-grow: 1;
+                }
+        
+                .todo-actions {
+                    display: flex;
+                    gap: 10px;
+                }
+        
+                .icon-button {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    padding: 5px;
+                    border-radius: 50%;
+                    transition: background 0.3s;
+                }
+        
+                .icon-button:hover {
+                    background: #f0f0f0;
+                }
+        
+                .edit-icon {
+                    color: #2196F3;
+                }
+        
+                .delete-icon {
+                    color: #F44336;
+                }
+        
+                .owner-tag {
+                    background: #E3F2FD;
+                    padding: 4px 8px;
+                    border-radius: 15px;
+                    font-size: 0.8em;
+                    color: #1976D2;
+                }
+        
+                .edit-form {
+                    display: none;
+                    margin-top: 10px;
+                }
+        
+                .edit-form.active {
+                    display: block;
+                }
+        
+                input[type="text"] {
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    width: 100%;
+                    margin-bottom: 10px;
+                }
+        
+                .save-button {
+                    background: #4CAF50;
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <a href="/" class="back-button">
+                        <span class="material-icons">arrow_back</span>
+                        Back
+                    </a>
+                    {% if owner %}
+                    <h2>Todos for {{ owner }}</h2>
+                    {% else %}
+                    <h2>All Todos</h2>
+                    {% endif %}
+                </div>
+        
+                {% for todo in todos %}
+                <div class="todo-card">
+                    <div class="todo-content">
+                        <div>{{ todo.task }}</div>
+                        <span class="owner-tag">{{ todo.owner }}</span>
+                    </div>
+                    <div class="todo-actions">
+                        <button class="icon-button" onclick="toggleEdit('edit-{{ todo.id }}')">
+                            <span class="material-icons edit-icon">edit</span>
+                        </button>
+                        <form action="/todos/{{ todo.id }}" method="post" style="display:inline;">
+                            <input type="hidden" name="method" value="delete">
+                            <input type="hidden" name="owner" value="{{ todo.owner }}">
+                            <button type="submit" class="icon-button">
+                                <span class="material-icons delete-icon">delete</span>
+                            </button>
+                        </form>
+                    </div>
+                    <form id="edit-{{ todo.id }}" class="edit-form" action="/todos/{{ todo.id }}" method="post">
+                        <input type="hidden" name="method" value="put">
+                        <input type="hidden" name="owner" value="{{ todo.owner }}">
+                        <input type="text" name="task" value="{{ todo.task }}" required>
+                        <button type="submit" class="save-button">Save</button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        
+            <script>
+                function toggleEdit(formId) {
+                    const form = document.getElementById(formId);
+                    form.classList.toggle('active');
+                }
+            </script>
+        </body>
+        </html>
+        <li>
+            {{ todo.task }} (Owner: {{ todo.owner }})
+            <!-- Edit Form -->
+            <form action="/todos/{{ todo.id }}" method="post" style="display:inline;">
+                <input type="hidden" name="method" value="put">
+                <input type="text" name="task" value="{{ todo.task }}" required>
+                <input type="hidden" name="owner" value="{{ todo.owner }}">
+                <button type="submit">Edit</button>
+            </form>
+            <!-- Delete Form -->
+            <form action="/todos/{{ todo.id }}" method="post" style="display:inline;">
+                <input type="hidden" name="method" value="delete">
+                <input type="hidden" name="owner" value="{{ todo.owner }}">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
